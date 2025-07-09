@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import QuizPage from "./QuizPage";
+import DictionaryPage from "./DictionaryPage";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <nav style={{ display: "flex", gap: "1rem" }}>
+        <Link to="/">Quiz</Link>
+        <Link to="/dictionary">Dictionary</Link>
+        </nav>
+
+        <div class="bg-red-500 text-white p-4 text-xl font-bold">
+  If you see this red box, Tailwind is working!
+</div>
+
+
+
+        <Routes>
+          <Route path="/" element={<QuizPage />} />
+          <Route path="/dictionary" element={<DictionaryPage />} />
+        </Routes>
+
+    </Router>
   );
 }
 
