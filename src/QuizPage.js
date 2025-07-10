@@ -15,6 +15,7 @@ function QuizPage() {
   const [choices, setChoices] = useState([]);
   const [selected, setSelected] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [isCorrect, setIsCorrect] = useState(false);
   const filterQuestionsByCategories = (selectedCats) => {
   if (selectedCats.length === 0) {
     setQuestions([]);
@@ -60,6 +61,7 @@ useEffect(() => {
   //generateQuestion
   const generateQuestion = () => {
   if (questions.length === 0) return;
+
 
   const correct = questions[Math.floor(Math.random() * questions.length)];
 
@@ -107,7 +109,7 @@ const reshuffleChoices = () => {
     if (choice === correctAnswer) {
       setFeedback("✅ Correct!");
     } else {
-      setFeedback(`❌ Wrong. Correct answer: ${correctAnswer}`);
+      setFeedback(`❌ Wrong`);
     }
   };
 
@@ -230,7 +232,7 @@ const reshuffleChoices = () => {
                 </button>
                 <button
                   onClick={() => playChinese(choice)}
-              
+
                 >
                   🔊
                 </button>
@@ -238,7 +240,7 @@ const reshuffleChoices = () => {
             ))}
           </div>
 
-          {feedback && (
+          {feedback &&  (
             <div className="mt-4 space-y-2">
               <p className="font-medium">{feedback}</p>
               <button
