@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Papa from "papaparse";
+import { playChinese } from "./utils/tts";
 
 
 
@@ -168,8 +169,6 @@ const reshuffleChoices = () => {
     Clear All
   </button>
 </div>
-
-
 </div>
 
 
@@ -185,6 +184,7 @@ const reshuffleChoices = () => {
               onChange={(e) => setQuizType(e.target.value)}
             />
             English → Hanzi
+
           </label>
           <label>
             <input
@@ -216,20 +216,28 @@ const reshuffleChoices = () => {
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {choices.map((choice, idx) => (
-              <button
-                key={idx}
-                className={`py-2 px-4 border rounded text-center ${
-                  selected === choice
-                    ? "bg-gray-300"
-                    : "hover:bg-blue-100 transition"
-                }`}
-                onClick={() => checkAnswer(choice)}
-                disabled={selected !== ""}
-              >
-                {choice}
-              </button>
+              <div key={idx} className="flex items-center gap-2">
+                <button
+                  className={`flex-1 py-2 px-4 border rounded text-center ${
+                    selected === choice
+                      ? "bg-gray-300"
+                      : "hover:bg-blue-100 transition"
+                  }`}
+                  onClick={() => checkAnswer(choice)}
+                  disabled={selected !== ""}
+                >
+                  {choice}
+                </button>
+                <button
+                  onClick={() => playChinese(choice)}
+              
+                >
+                  🔊
+                </button>
+              </div>
             ))}
           </div>
+
           {feedback && (
             <div className="mt-4 space-y-2">
               <p className="font-medium">{feedback}</p>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
+import { playChinese } from "./utils/tts";
 
 
 
@@ -57,6 +58,8 @@ function DictionaryPage() {
       </select>
     </div>
 
+
+
     {/* Table + Form Side by Side */}
     <div className="flex flex-col lg:flex-row gap-6">
       {/* Word Table */}
@@ -73,7 +76,17 @@ function DictionaryPage() {
           <tbody>
             {filteredData.map((entry, idx) => (
               <tr key={idx} className="hover:bg-gray-50">
-                <td className="p-2 border">{entry.Hanzi}</td>
+                <td>
+                {entry.Hanzi}
+                <button
+                onClick={() => playChinese(entry.Hanzi)}
+                title="Play Hanzi"
+                style={{ marginLeft: "0.5rem", fontSize: "1rem", cursor: "pointer" }}
+                >
+                🔊
+                </button>
+                </td>
+
                 <td className="p-2 border">{entry.Pinyin}</td>
                 <td className="p-2 border">{entry.English}</td>
                 <td className="p-2 border">{entry.Category}</td>
@@ -136,6 +149,8 @@ function DictionaryPage() {
     </div>
   </div>
 );
+
+
 
 }
 
