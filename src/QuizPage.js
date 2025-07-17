@@ -4,7 +4,7 @@ import { playChinese } from "./utils/tts";
 
 
 
-function QuizPage() {
+function QuizPage({ ttsSpeed }) {
   const [started, setStarted] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(["All"]);
@@ -15,15 +15,7 @@ function QuizPage() {
   const [choices, setChoices] = useState([]);
   const [selected, setSelected] = useState("");
   const [feedback, setFeedback] = useState("");
-  const [isCorrect, setIsCorrect] = useState(false);
-  const filterQuestionsByCategories = (selectedCats) => {
-  if (selectedCats.length === 0) {
-    setQuestions([]);
-  } else {
-    const filtered = allData.filter((q) => selectedCats.includes(q.Category));
-    setQuestions(filtered);
-  }
-};
+  const [isCorrect, setIsCorrect] = useState("");
 
 
   // Fetch dictionary
@@ -81,9 +73,10 @@ useEffect(() => {
   setChoices(Array.from(options).sort(() => Math.random() - 0.5));
   setSelected("");
   setFeedback("");
+  setIsCorrect(false);
 };
 
-const reshuffleChoices = () => {
+  const reshuffleChoices = () => {
   if (!currentQuestion) return;
 
   const sameCategoryQuestions = questions.filter(
@@ -108,9 +101,12 @@ const reshuffleChoices = () => {
     const correctAnswer = currentQuestion[quizType];
     if (choice === correctAnswer) {
       setFeedback("✅ Correct!");
+      setIsCorrect(true);
     } else {
       setFeedback(`❌ Wrong`);
-    }
+    setIsCorrect(false);
+  }
+
   };
 
   const getQuestionPrompt = () => {
@@ -129,7 +125,7 @@ const reshuffleChoices = () => {
 
   <div className="flex flex-wrap gap-3 mb-4">
   {categories
-      .filter((cat) => cat !== "All")
+      .filter((cat) => cat !== "!All")
       .map((cat) => (
         <label key={cat} className="flex items-center space-x-2">
         <input
@@ -153,7 +149,7 @@ const reshuffleChoices = () => {
 
   <div className="mb-4 flex gap-2">
   <button
-    className="bg-gray-200 px-3 py-1 rounded"
+    className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-1 rounded"
     onClick={() => {
       setSelectedCategories(categories.filter(cat => cat ));
       setQuestions(allData);
@@ -162,7 +158,7 @@ const reshuffleChoices = () => {
     Select All
   </button>
   <button
-    className="bg-gray-200 px-3 py-1 rounded"
+    className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 px-3 py-1 rounded"
     onClick={() => {
       setSelectedCategories([]);
       setQuestions([]);
@@ -217,40 +213,49 @@ const reshuffleChoices = () => {
             <span className="text-blue-600">{getQuestionPrompt()}</span>?
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
-            {choices.map((choice, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                <button
-                  className={`flex-1 py-2 px-4 border rounded text-center ${
-                    selected === choice
-                      ? "bg-gray-300"
-                      : "hover:bg-blue-100 transition"
-                  }`}
-                  onClick={() => checkAnswer(choice)}
-                  disabled={selected !== ""}
-                >
-                  {choice}
-                </button>
-                <button
-                  onClick={() => playChinese(choice)}
+          {choices.map((choice, idx) => (
+    <div key={idx} className="flex items-center gap-2">
+      <button
+        className={`flex-1 py-2 px-4 border rounded text-center ${
+          selected === choice
+            ? "bg-gray-300"
+            : "hover:bg-blue-100 transition"
+        }`}
+        onClick={() => checkAnswer(choice)}
+        disabled={selected !== ""}
+      >
+        {choice}
+      </button>
 
-                >
-                  🔊
-                </button>
-              </div>
-            ))}
+      {/* Speaker button for each Hanzi */}
+      {quizType === "Hanzi" && (
+        <button
+          className="text-blue-500 hover:text-blue-700"
+          onClick={() => playChinese(choice, ttsSpeed)}
+          title={`Play ${choice}`}
+        >
+          🔊
+        </button>
+      )}
+    </div>
+))}
+
           </div>
 
-          {feedback &&  (
+          {feedback && (
             <div className="mt-4 space-y-2">
               <p className="font-medium">{feedback}</p>
-              <button
-                className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition"
-                onClick={reshuffleChoices}
-              >
-                Try Again
-              </button>
+              {!isCorrect && (
+                <button
+                  className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition"
+                  onClick={reshuffleChoices}
+                >
+                  Try Again
+                </button>
+              )}
             </div>
           )}
+
         </div>
       )}
 

@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 
+html {
+  @apply bg-white text-black;
+}
+
+html.dark {
+  @apply bg-gray-900 text-white;
+}
 
 body {
   margin: 0;
